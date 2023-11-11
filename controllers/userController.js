@@ -1,11 +1,13 @@
-const { User } = require('../models/index');
+const { User, Thought } = require('../models');
 
 module.exports = {
     // get all users
+    // why wont the thoughts populate?
     async getAllUsers(req, res) {
         try {
-            const userData = await User.find();
+            const userData = await User.find().populate('thoughts');
             res.json(userData);
+            console.log(userData);
         } catch (err) {
             res.status(400).json(err);
         }

@@ -92,10 +92,14 @@ const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 // get a random name from the names array
 const getRandomName = () => getRandomArrItem(names);
 
-// get a random thought from the thoughts array and assing it to a random name
+// get a random thought from the thoughts array and assign it to a random name
 const getRandomThought = () => {
+    const randomName = getRandomName();
+    const randomThought = getRandomArrItem(thoughts);
+    
     return {
-        thoughtText: getRandomArrItem(thoughts)
+        username: randomName,
+        thoughtText: randomThought
     };
 };
 

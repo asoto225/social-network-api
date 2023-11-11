@@ -7,54 +7,55 @@ connection.on('error', (err) => err);
 connection.once('open', async () => {
   console.log('connected');
 
-  // Drop existing courses
+  // Drop existing users and thoughts
   await User.deleteMany({});
-
-  // Drop existing students
   await Thought.deleteMany({});
 
-  // Create empty array to hold the students
+  // Create empty array to hold the users and thoughts
   const users = [];
+  const thoughts = [];
 
-  // Loop 20 times -- add students to the students array
+  // Loop 10 times -- add users and thoughts to the arrays
   const chosenUsernames = new Set();
-const chosenEmails = new Set();
+  const chosenEmails = new Set();
 
-for (let i = 0; i < 5; i++) {
-  let username, email;
+  for (let i = 0; i < 10; i++) {
+    let username, email;
 
-  do {
-    // Generate a random username and email
-    username = getRandomName(5);
-    email = username + '@gmail.com';
-  } while (chosenUsernames.has(username) || chosenEmails.has(email));
+    do {
+      // Generate a random username and email
+      username = getRandomName();
+      email = username + '@gmail.com';
+    } while (chosenUsernames.has(username) || chosenEmails.has(email));
 
-  // Add the username and email to their respective sets to mark them as chosen
-  chosenUsernames.add(username);
-  chosenEmails.add(email);
+    // Add the username and email to their respective sets to mark them as chosen
+    chosenUsernames.add(username);
+    chosenEmails.add(email);
 
-  // Get some random assignment objects using a helper function that we imported from ./data
-  const thoughts = getRandomThought(5);
+    // Get some random thought objects using a helper function that we imported from ./data
+    const userThoughts = getRandomThought(10);
 
-  users.push({
-    email,
-    username,
-    thoughts,
-  });
-}
+    users.push({
+      email,
+      username,
+    });
 
+    thoughts.push({
+      thoughtName: `Thought ${i + 1}`,
+      user: users[i]._id, // Associate the thought with the user using the user's ID
+      thoughts: userThoughts,
+    });
+  }
 
-  // Add students to the collection and await the results
+  // Add users to the collection and await the results
   await User.collection.insertMany(users);
 
-  // Add courses to the collection and await the results
-  await Thought.collection.insertOne({
-    thoughtName: 'My First Thought',
-    users: [...users],
-  });
+  // Add thoughts to the collection and await the results
+  await Thought.collection.insertMany(thoughts);
 
   // Log out the seed data to indicate what should appear in the database
   console.table(users);
+  console.table(thoughts);
   console.info('Seeding complete! 🌱');
   process.exit(0);
 });

@@ -17,6 +17,11 @@ const thoughtSchema = new Schema({
         type: String,
         required: 'Username is Required'
     },
+    user: 
+        {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     reactions: [
         {
           type: Schema.Types.ObjectId,

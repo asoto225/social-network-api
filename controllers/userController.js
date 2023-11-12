@@ -5,10 +5,11 @@ module.exports = {
     // why wont the thoughts populate?
     async getAllUsers(req, res) {
         try {
-            const userData = await User.find().populate('thoughts');
+            const userData = await User.find();
             res.json(userData);
             console.log(userData);
         } catch (err) {
+            console.log(err)
             res.status(400).json(err);
         }
     },
@@ -18,6 +19,7 @@ module.exports = {
             const userData = await User.findOne({ _id: req.params.userId });
             res.json(userData);
         } catch (err) {
+            res.json('no user found')
             res.status(400).json(err);
         }
     },
@@ -44,9 +46,38 @@ module.exports = {
     async deleteUser(req, res) {
         try {
             const userData = await User.findOneAndDelete({ _id: req.params.userId });
-            res.json(userData);
+            res.json('user deleted');
         }
         catch (err) {
+            res.status(400).json(err);
+        }
+    },
+    async addFriend(req, res) {
+        try {
+            const userData = await User.findOneAndUpdate(
+                { _id: req.params.userId },
+                { $push: { friends: req.params.friendId } },
+                { new: true }
+            );
+            res.json(userData);
+            console.log(userData);
+        } catch (err) {
+            console.log(err)
+            res.status(400).json(err);
+        }
+    },
+    async deleteFriend(req, res) {
+        try {
+            const userData = await User.findOneAndUpdate(
+                { _id: req.params.userId },
+                { $pull: { friends: req.params.friendId } },
+                { new: true }
+            );
+            res.json('friend deleted');
+            console.log(userData);
+        }
+        catch (err) {
+            console.log(err)
             res.status(400).json(err);
         }
     }
